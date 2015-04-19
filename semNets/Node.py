@@ -6,4 +6,4 @@ class Node :
     return str(self.name)
 
   def __repr__(self):
-    return "Node(name = {})".format(repr(self.name))
+    return "Node(name = '{}')".format(self.name)
