@@ -6,5 +6,5 @@ class NodeTests (TestCase):
     n = Node("Hello")
     self.assertIsNot(n, Node("Hello"))
     self.assertNotEqual(n, Node("Hello"))
-    self.assertEqual(str(n), "N['Hello']")
+    self.assertEqual(str(n), "Hello")
     self.assertEqual(repr(n), "Node(name = 'Hello')")
