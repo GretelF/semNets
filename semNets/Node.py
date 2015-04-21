@@ -7,3 +7,6 @@ class Node :
 
   def __repr__(self):
     return "Node(name = '{}')".format(self.name)
+
+
+  # add node_attributes
