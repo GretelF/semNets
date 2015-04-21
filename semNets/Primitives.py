@@ -21,12 +21,37 @@ def RelationType(name):
   """
   return relationTypes.setdefault(name, NamedTypeBase(name, "RelationType"))
 
-def AttributeType(name):
+def RelationAttributeType(name):
   """
   HAX(!)
   if attributeType already exists returns existing instance, else returns new instance and adds it to attributeTypes dictionary
   """
-  return attributeTypes.setdefault(name, NamedTypeBase(name, "AttributeType"))
+  return attributeTypes.setdefault(name, NamedTypeBase(name, "RelationAttributeType"))
+
+def NodeAttributeType(name):
+  """
+  HAX(!)
+  if attributeType already exists returns existing instance, else returns new instance and adds it to attributeTypes dictionary
+  """
+  return attributeTypes.setdefault(name, NamedTypeBase(name, "NodeAttributeType"))
+
+
+class Node :
+  def __init__(self, name):
+    self.name = name
+    self.attributes = []
+
+  def __str__(self):
+    return str(self.name)
+
+  def __repr__(self):
+    return "Node(name = '{}')".format(self.name)
+
+  def createAttribute(self, type, value):
+    a = Attribute(type, self, value)
+    self.attributes.append(a)
+    return a
+
 
 class Relation:
   def __init__(self, type, source, target):
@@ -47,13 +72,13 @@ class Relation:
     return a
 
 class Attribute:
-  def __init__(self, type, relation, value):
+  def __init__(self, type, target, value):
     self.type = type
-    self.relation = relation
+    self.target = target
     self.value = value
 
   def __str__(self):
-    return "{} with {}: {}".format(self.relation, self.type, self.value)
+    return "{} with {}: {}".format(self.target, self.type, self.value)
 
   def __repr__(self):
-    return "Attribute(type = '{}', relation = '{}', value = '{}')".format(self.type, self.relation, self.value)
+    return "Attribute(type = '{}', target = '{}', value = '{}')".format(self.type, self.target, self.value)

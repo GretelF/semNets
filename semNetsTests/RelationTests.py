@@ -1,6 +1,5 @@
 from unittest import TestCase
-from semNets.Relation import Relation, RelationType, AttributeType
-from semNets.Node import Node
+from semNets.Primitives import Relation, RelationType, RelationAttributeType, NodeAttributeType, Node
 
 class RelationTests (TestCase):
   def test_relationType(self):
@@ -22,18 +21,18 @@ class RelationTests (TestCase):
     self.assertEqual(str(r), "pelican is-a bird")
     self.assertEqual(repr(r), "Relation(type = 'is-a', source = 'pelican', target = 'bird')")
 
-  def test_attributeType(self):
-    at = AttributeType("amount")
-    at2 = AttributeType("amount")
+  def test_relationAttributeType(self):
+    at = RelationAttributeType("amount")
+    at2 = RelationAttributeType("amount")
     self.assertEqual(at.name, "amount")
     self.assertEqual(str(at), "amount")
-    self.assertEqual(repr(at), "AttributeType(name = 'amount')")
+    self.assertEqual(repr(at), "RelationAttributeType(name = 'amount')")
     self.assertIs(at, at2)
 
 
   def test_relationWithAttributes(self):
     rt = RelationType("has")
-    at = AttributeType("amount")
+    at = RelationAttributeType("amount")
     source = Node("bird")
     target = Node("wing")
     r = Relation(rt, source, target)
@@ -43,4 +42,4 @@ class RelationTests (TestCase):
     self.assertIs(a.type, at)
     self.assertEqual(a.value, 2)
     self.assertEqual(str(a), "bird has wing with amount: 2")
-    self.assertEqual(repr(a), "Attribute(type = 'amount', relation = 'bird has wing', value = '2')")
+    self.assertEqual(repr(a), "Attribute(type = 'amount', target = 'bird has wing', value = '2')")
