@@ -1,38 +1,41 @@
 class Topology:
 
-  def __init__(self, nodeList = None, relationList = None):
-    self.nodeList = nodeList or []
-    self.relationList = relationList or[]
+  def __init__(self):
+    self.nodes = []
+    self.relations = []
 
   def __str__(self):
-    pass
+    return "Topology"
 
   def __repr__(self):
-    pass
+    return "Topology"
 
+  def load(self, data):
+    for node in data.get("nodes"):
+      pass                                            # TODO
 
   def existsNode(self, n):
-    return n in self.nodeList
+    return n in self.nodes
 
   def insertNode(self, n):
-    if not n in self.nodeList:
-      self.nodeList.append(n)
+    assert n not in self.nodes, "{} already in {}.".format(repr(n), repr(self))
+    self.nodes.append(n)
 
   def deleteNode(self, n):
-    if n in self.nodeList:
-      self.nodeList.remove(n)
+    if n in self.nodes:
+      self.nodes.remove(n)
 
   def existsRelation(self, r):
-    return r in self.relationList
+    return r in self.relations
 
   def insertRelation(self, r):
-    if not r in self.relationList:
-      self.relationList.append(r)
-    if not r.source in self.nodeList:
-      self.nodeList.append(r.source)
-    if not r.target in self.nodeList:
-      self.nodeList.append(r.target)
+    assert r.target in self.nodes, "{} not in {}.".format(repr(r.target), repr(self))
+    assert r.source in self.nodes, "{} not in {}.".format(repr(r.source), repr(self))
+    self.relations.append(r)
 
   def deleteRelation(self, r):
-    if r in self.relationList:
-      self.relationList.remove(r)
+    if r in self.relations:
+      self.relations.remove(r)
+
+  def validate(self):
+    pass                                        # TODO ?????

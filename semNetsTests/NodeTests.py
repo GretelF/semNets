@@ -5,7 +5,7 @@ class NodeTests (TestCase):
   def test_node(self):
     n = Node("Hello")
     self.assertIsNot(n, Node("Hello"))
-    self.assertNotEqual(n, Node("Hello"))
+    self.assertEqual(n, Node("Hello"))
     self.assertEqual(str(n), "Hello")
     self.assertEqual(repr(n), "Node(name = 'Hello')")\
 
@@ -23,6 +23,6 @@ class NodeTests (TestCase):
     a = n.createAttribute(at, "white")
     self.assertIs(n.attributes[0], a)
     self.assertIs(a.type, at)
-    self.assertEqual(str(a), "pelican with color: white")
-    self.assertEqual(repr(a), "Attribute(type = 'color', target = 'pelican', value = 'white')")
+    self.assertEqual(str(a), "color: white")
+    self.assertEqual(repr(a), "Attribute(type = 'color', value = 'white')")
 

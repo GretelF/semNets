@@ -9,9 +9,27 @@ class TopologyTests (TestCase):
     n1 = Node("pelican")
     rt = RelationType("is_a")
     r = Relation(rt, n0, n1)
+
+    self.assertFalse(t.existsNode(n0))
+    self.assertFalse(t.existsNode(n1))
+    self.assertFalse(t.existsRelation(r))
+
+    t.insertNode(n0)
+    t.insertNode(n1)
     t.insertRelation(r)
-    self.assertIn(n0, t.nodeList)
-    self.assertIn(n1, t.nodeList)
-    self.assertIn(r, t.relationList)
+
+    self.assertTrue(t.existsNode(n0))
+    self.assertTrue(t.existsNode(n1))
+    self.assertTrue(t.existsRelation(r))
+
+    with self.assertRaises(AssertionError):
+      t.insertNode(n0)
+
+    t.insertRelation(r)
+    self.assertTrue(len(t.relations), 2)
+
+
+
+
 
 

@@ -14,6 +14,9 @@ class NamedTypeBase:
   def __repr__(self):
     return "{}(name = '{}')".format(self.typeName, self.name)
 
+  def __eq__(self, other):
+    return self is other
+
 def RelationType(name):
   """
   HAX(!)
@@ -52,6 +55,9 @@ class Node :
     self.attributes.append(a)
     return a
 
+  def __eq__(self, other):
+    return self.name == other.name
+
 
 class Relation:
   def __init__(self, type, source, target):
@@ -66,6 +72,13 @@ class Relation:
   def __repr__(self):
     return "Relation(type = '{}', source = '{}', target = '{}')".format(self.type, self.source, self.target)
 
+  def __eq__(self, other):
+    return self.type == other.type and \
+           self.source == other.source and \
+           self.target == other.target and \
+           self.attributes == other.attributes
+
+
   def createAttribute(self, type, value):
     a = Attribute(type, self, value)
     self.attributes.append(a)
@@ -74,11 +87,13 @@ class Relation:
 class Attribute:
   def __init__(self, type, target, value):
     self.type = type
-    self.target = target
     self.value = value
 
   def __str__(self):
-    return "{} with {}: {}".format(self.target, self.type, self.value)
+    return "{}: {}".format(self.type, self.value)
 
   def __repr__(self):
-    return "Attribute(type = '{}', target = '{}', value = '{}')".format(self.type, self.target, self.value)
+    return "Attribute(type = '{}', value = '{}')".format(self.type, self.value)
+
+  def __eq__(self, other):
+    return self.type == other.type and self.value == value

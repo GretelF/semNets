@@ -41,5 +41,5 @@ class RelationTests (TestCase):
     self.assertIs(r.attributes[0], a)
     self.assertIs(a.type, at)
     self.assertEqual(a.value, 2)
-    self.assertEqual(str(a), "bird has wing with amount: 2")
-    self.assertEqual(repr(a), "Attribute(type = 'amount', target = 'bird has wing', value = '2')")
+    self.assertEqual(str(a), "amount: 2")
+    self.assertEqual(repr(a), "Attribute(type = 'amount', value = '2')")
