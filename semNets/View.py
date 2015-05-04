@@ -11,7 +11,8 @@ class View:
     pass
 
   def expand(self, filter):
-    pass
+    # expand nodes
+    filter()
 
   def includeNode(self, n):
     assert self.topology.existsNode(n)
@@ -26,7 +27,7 @@ class View:
     self.nodes.remove(n)
 
   def excludeRelation(self, r):
-    pass
+    self.relations.remove(r)
 
   #Get all source and target nodes for "open" relations
   def mend(self):

@@ -1,3 +1,5 @@
+from semNets.Primitives import Node, Relation, RelationType, RelationAttributeType, NodeAttributeType
+
 class Topology:
 
   def __init__(self):
@@ -9,10 +11,6 @@ class Topology:
 
   def __repr__(self):
     return "Topology"
-
-  def load(self, data):
-    for node in data.get("nodes"):
-      pass                                            # TODO
 
   def existsNode(self, n):
     return n in self.nodes
@@ -39,3 +37,24 @@ class Topology:
 
   def validate(self):
     pass                                        # TODO ?????
+
+  def load(self, data):
+    attributetypes = data.get("attributetypes")
+    relationtypes = data.get("relationtypes")
+    for node in data.get("nodes"):                                                              # load nodes
+      self.nodes.append(Node(node))
+    for node_attribute in data.get("node_attributes"):                                          # load node attributes
+      at = NodeAttributeType(attributetypes[node_attribute[0]])
+      index = node_attribute[1]
+      value = node_attribute[2]
+      self.nodes[index].createAttribute(at, value)
+    for relation in data.get("relations"):                                                      # load relations
+      rt = RelationType(relationtypes[relation[0]])
+      source = self.nodes[relation[1]]
+      target = self.nodes[relation[2]]
+      self.relations.append(Relation(rt, source, target))
+    for relation_attribute in data.get("relation_attributes"):                                  # load relation attributes
+      at = RelationAttributeType(attributetypes[relation_attribute[0]])
+      index = relation_attribute[1]
+      value = relation_attribute[2]
+      self.relations[index].createAttribute(at, value)
