@@ -1,0 +1,39 @@
+{
+  "nodes" :
+  [
+    "bird",
+    "pelican",
+    "wings",
+    "fly"
+  ],
+  "relationtypes":
+  [
+    "is_a",
+    "has",
+    "has_ability"
+  ],
+  "attributetypes":
+  [
+    "amount",
+    "size",
+    "color",
+    "maxVelocity"
+  ],
+  "relations":
+    [
+      [0, 1, 0],
+      [1, 0, 2],
+      [2, 0, 3],
+      [2, 1, 3]
+    ],
+  "relation_attributes":
+    [
+      [0, 1, 2],
+      [3, 3, 150]
+    ],
+  "node_attributes":
+    [
+       [1, 1, "big"],
+       [2, 1, "white"]
+    ]
+}

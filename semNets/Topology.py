@@ -39,6 +39,9 @@ class Topology:
     pass                                        # TODO ?????
 
   def load(self, data):
+    self.nodes.clear()
+    self.relations.clear()
+
     attributetypes = data.get("attributetypes")
     relationtypes = data.get("relationtypes")
     for node in data.get("nodes"):                                                              # load nodes

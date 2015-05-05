@@ -96,4 +96,4 @@ class Attribute:
     return "Attribute(type = '{}', value = '{}')".format(self.type, self.value)
 
   def __eq__(self, other):
-    return self.type == other.type and self.value == value
+    return self.type == other.type and self.value == other.value
