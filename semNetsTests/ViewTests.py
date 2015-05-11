@@ -2,43 +2,30 @@ from unittest import TestCase
 from semNets.Topology import Topology
 from semNets.Primitives import Node, Relation, RelationType, RelationAttributeType
 from semNets.View import View
+import json
 
 def buildTopology():
   t = Topology()
 
-  n0 = Node("foo")
-  n1 = Node("bar")
-  n2 = Node("baz")
-  n3 = Node("zam")
-  rt = RelationType("x")
-  r0 = Relation(rt, n0, n1)
-  r1 = Relation(rt, n1, n2)
-  r2 = Relation(rt, n1, n3)
-  at = RelationAttributeType("amount")
-  r0.createAttribute(at, "2")
-  r1.createAttribute(at, "1")
-  r2.createAttribute(at, "10")
-  t.insertNode(n0)
-  t.insertNode(n1)
-  t.insertNode(n2)
-  t.insertNode(n3)
-  t.insertRelation(r0)
-  t.insertRelation(r1)
-  t.insertRelation(r2)
+  with open("TestData.json") as file:
+    net = json.load(file)
+
+    t = Topology()
+    t.load(net)
   return t
 
 
 class ViewTests(TestCase):
   def test_basicViewOperations(self):
-    n = Node("bums")
+    n = Node("penguin")
     t = buildTopology()
     t.insertNode(n)
-    r = Relation(RelationType("z"), n, t.nodes[1])
+    r = Relation(RelationType("is_a"), n, Node("bird"))
     t.insertRelation(r)
     v = View(t)
 
     with self.assertRaises(AssertionError):
-      v.includeNode(Node("xyz"))
+      v.includeNode(Node("beatle"))                 # does not exist in topology t
 
     self.assertEqual(len(v.nodes), 0)
     self.assertEqual(len(v.relations), 0)
@@ -51,13 +38,13 @@ class ViewTests(TestCase):
 
     v.mend()
 
-    self.assertIn(t.nodes[1], v.nodes)
+    self.assertIn(Node("bird"), v.nodes)            # after mend the Node(name="bird") should be in the view, too
 
   def test_expand(self):
     t = buildTopology()
     v = View(t)
 
-    v.includeNode(Node("bar"))
+    v.includeNode(Node("bird"))
 
 
 

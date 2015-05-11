@@ -5,7 +5,7 @@ import json
 
 
 class TopologyTests(TestCase):
-  def test_relationType(self):
+  def test_insertNodesAndRelations(self):
     t = Topology()
     n0 = Node("bird")
     n1 = Node("pelican")

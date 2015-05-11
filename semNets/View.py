@@ -10,9 +10,15 @@ class View:
   def __repr__(self):
     pass
 
-  def expand(self, filter):
-    # expand nodes
-    filter()
+  # easy expand
+  def expand(self):
+    for node in self.nodes:
+      relations = [r for r in self.topology.relations if r.source == node]
+      for relation in relations:
+        if relation.target not in self.nodes:
+          self.includeRelation(relation)
+          self.includeNode(relation.target)
+
 
   def includeNode(self, n):
     assert self.topology.existsNode(n)

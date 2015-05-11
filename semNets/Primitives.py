@@ -84,8 +84,11 @@ class Relation:
     self.attributes.append(a)
     return a
 
+  def hasAttribute(self, attr):
+    return attr in self.attributes
+
 class Attribute:
-  def __init__(self, type, target, value):
+  def __init__(self, type, value):
     self.type = type
     self.value = value
 

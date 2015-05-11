@@ -31,6 +31,9 @@ class Topology:
     assert r.source in self.nodes, "{} not in {}.".format(repr(r.source), repr(self))
     self.relations.append(r)
 
+  def tryGetOrInsertRelation(self, r):
+    pass  # TODO???
+
   def deleteRelation(self, r):
     if r in self.relations:
       self.relations.remove(r)
