@@ -51,7 +51,7 @@ class Node :
     return "Node(name = '{}')".format(self.name)
 
   def createAttribute(self, type, value):
-    a = Attribute(type, self, value)
+    a = Attribute(type, value)
     self.attributes.append(a)
     return a
 
@@ -80,7 +80,7 @@ class Relation:
 
 
   def createAttribute(self, type, value):
-    a = Attribute(type, self, value)
+    a = Attribute(type, value)
     self.attributes.append(a)
     return a
 

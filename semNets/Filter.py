@@ -11,17 +11,16 @@ def conditionType(name):
 
 @conditionType("missingAllRelations")
 def makeMissingAllRelations(data):
-
   def missingAllRelations(topology, node):
     for rel in data:
-      type = RelationType(rel["type"])
-      target = Node(rel["target"])
-      attrs = [Attribute(RelationAttributeType(a["type"]), a["value"]) for a in rel["attributes"]]
+      type = RelationType(rel["type"]) if rel["type"] != None else None
+      target = Node(rel["target"]) if rel["target"] != None else None
+      attrs = [Attribute(RelationAttributeType(a["type"]), a["value"]) for a in rel["attributes"]] if rel["attributes"] != None else None
       relations = [r for r in topology.relations if r.source == node]
 
       for r in relations:
         # if a relation is found, that does exist within the topology: return False
-        if r.type == type and r.target == target and all(r.hasAttribute(a) for a in attrs):
+        if (type == None or r.type == type) and (target == None or r.target == target) and (attrs == None or all(r.hasAttribute(a) for a in attrs)):
           return False
     # if none of the given relations is found within the topology: return True
     return True
@@ -30,17 +29,16 @@ def makeMissingAllRelations(data):
 
 @conditionType("missingAnyRelation")
 def makeMissingAnyRelation(data):
-
   def missingAnyRelation(topology, node):
     for rel in data:
-      type = RelationType(rel["type"])
-      target = Node(rel["target"])
-      attrs = [Attribute(RelationAttributeType(a["type"]), a["value"]) for a in rel["attributes"]]
+      type = RelationType(rel["type"]) if rel["type"] != None else None
+      target = Node(rel["target"]) if rel["target"] != None else None
+      attrs = [Attribute(RelationAttributeType(a["type"]), a["value"]) for a in rel["attributes"]] if rel["attributes"] != None else None
       relationInRelationList = False                                                                    # Flag
 
       relation = [r for r in topology.relations if r.source == node]
       for r in relations:
-        if r.type == type or r.target == target or any(r.hasAttribute(a) for a in attrs):
+        if (type != None and r.type == type) or (taret != None and r.target == target) or ( attrs != None and any(r.hasAttribute(a) for a in attrs)):
           relationInRelationList = True
           break
 
@@ -57,14 +55,14 @@ def makeMissingAnyRelation(data):
 def makeHasAllRelations(data):
   def hasAllRelations(topology, node):
     for rel in data:
-      type = RelationType(rel["type"])
-      target = Node(rel["target"])
-      attrs = [Attribute(RelationAttributeType(a["type"]), a["value"]) for a in rel["attributes"]]
+      type = RelationType(rel["type"]) if rel["type"] != None else None
+      target = Node(rel["target"]) if rel["target"] != None else None
+      attrs = [Attribute(RelationAttributeType(a["type"]), a["value"]) for a in rel["attributes"]] if rel["attributes"] != None else None
       relations = [r for r in topology.relations if r.source == node]
 
       relationInRelationList = False
       for r in relations:
-        if r.type == type and r.target == target and all(r.hasAttribute(a) for a in attrs):
+        if (type == None or r.type == type) and (target == None or r.target == target) and (attrs == None or all(r.hasAttribute(a) for a in attrs)):
           relationInRelationList = True
 
       # if the current relation does not exist within the topology: return False
@@ -79,13 +77,13 @@ def makeHasAllRelations(data):
 def makeHasAnyRelation(data):
   def hasAnyRelation(topology, node):
     for rel in data:
-      type = RelationType(rel["type"])
-      target = Node(rel["target"])
-      attrs = [Attribute(RelationAttributeType(a["type"]), a[value]) for a in rel["attributes"]]
+      type = RelationType(rel["type"]) if rel["type"] != None else None
+      target = Node(rel["target"]) if rel["target"] != None else None
+      attrs = [Attribute(RelationAttributeType(a["type"]), a[value]) for a in rel["attributes"]] if rel["attributes"] != None else None
       relations = [r for r in topology.relations if r.source == node]
 
       for r in relations:
-        if r.type == type and r.target == target and all(r.hasAttribute(a) for a in attrs):
+        if (type == None or r.type == type) and (target == None or r.target == target) and (attrs == None or all(r.hasAttribute(a) for a in attrs)):
           return True
     return False
 
