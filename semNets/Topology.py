@@ -1,4 +1,5 @@
 from semNets.Primitives import Node, Relation, RelationType, RelationAttributeType, NodeAttributeType
+from sys import maxsize
 
 class Topology:
 
@@ -64,3 +65,90 @@ class Topology:
       index = relation_attribute[1]
       value = relation_attribute[2]
       self.relations[index].createAttribute(at, value)
+
+  def existsPath(self, source, target, allowedRelations = None, iterations = maxsize):
+    '''
+    check if a path from source to target exists.
+
+    :param source: start of path
+    :param target: end of path
+    :param allowedRelations: RelationTypes that are allowed to be followed, default = all RelationTypes allowed
+    :param iterations: number of steps in the search algorithm, default = maximum int
+    :return: True if path is found, False if not.
+    '''
+    nodes = [source]
+    newNodes = nodes.copy()
+    newNodesBuffer = []
+
+    for i in range(iterations):
+      for node in newNodes:
+        # get all relations where the current node is source and its type is in allowedRelations.
+        # If allowedRelations is None the second condition is neglected
+        relations = [r for r in self.relations if r.source == node and (allowedRelations is None or r.type in allowedRelations)]
+
+        for rel in relations:
+          if rel.target not in nodes:
+            newNodesBuffer.append(rel.target)
+
+      # no new nodes found.
+      if len(newNodesBuffer) == 0:
+        break
+
+      nodes.append(newNodesBuffer)
+      newNodes = newNodesBuffer.copy()
+      newNodesBuffer.clear()
+
+      if target in nodes:
+        return True
+
+    return False
+
+  # pathfinding with breadth-first-search
+  def findPath(self, source, target, allowedRelations = None, iterations = maxsize):
+    '''
+    Checks if a path from source to target exists, if yes: return it. 
+
+    :param source: start of the path
+    :param target: end of the path
+    :param allowedRelations: RelationTypes that are allowed to follow, default = all RelationTypes allowed
+    :param iterations: number of steps in the search algorithm. default = maximum int
+
+    :return: list of nodes in the found path and number of iterations needed. If no path is found: None and -1
+    '''
+    path = []
+    nodes = {source : None}
+    newNodes = nodes.copy()
+    newNodesBuffer = {}
+
+    for i in range(iterations):
+      for relSource in newNodes:
+        # get all relations where the current node is source and its type is in allowedRelations.
+        # If allowedRelations is None the second condition is neglected
+        relations = [r for r in self.relations if r.source == relSource and (allowedRelations is None or r.type in allowedRelations)]
+
+        for relation in relations:
+          relTarget = relation.target
+          # if the node is not already in the list of visited nodes:
+          if relTarget not in nodes.keys():
+            # the relations target is added with |source| as parent
+            newNodesBuffer[relTarget] = [relSource]
+
+      # no new nodes found
+      if len(newNodesBuffer) == 0:
+        break
+
+      # add all nodes from newNodes to nodes.
+      nodes.update(newNodesBuffer)
+      newNodes = newNodesBuffer.copy()
+      newNodesBuffer.clear()
+
+      if target in nodes.keys():
+        curNode = target
+        while curNode != source:
+          path.append(curNode)
+          curNode = nodes[curNode][1]
+        return path.reverse(), i
+
+    #if after all iterations target is not found: return None
+    return None, -1
+
