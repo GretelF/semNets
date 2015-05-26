@@ -106,7 +106,7 @@ class Topology:
   # pathfinding with breadth-first-search
   def findPath(self, source, target, allowedRelations = None, iterations = maxsize):
     '''
-    Checks if a path from source to target exists, if yes: return it. 
+    Checks if a path from source to target exists, if yes: return it.
 
     :param source: start of the path
     :param target: end of the path

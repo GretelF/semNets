@@ -11,13 +11,18 @@ class View:
     pass
 
   # easy expand
-  def expand(self):
+  def expand(self, relationFilter):
+    nodesToBeIncluded = []
+
     for node in self.nodes:
       relations = [r for r in self.topology.relations if r.source == node]
       for relation in relations:
-        if relation.target not in self.nodes:
+        if relationFilter(relation) and relation.target not in self.nodes:
           self.includeRelation(relation)
-          self.includeNode(relation.target)
+          nodesToBeIncluded.append(relation.target)                              # nodes will be included all together at the end to prevent the loop from growing.
+
+    for node in nodesToBeIncluded:
+      self.includeNode(node)
 
 
   def includeNode(self, n):

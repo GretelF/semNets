@@ -38,7 +38,7 @@ def makeMissingAnyRelation(data):
 
       relation = [r for r in topology.relations if r.source == node]
       for r in relations:
-        if (type != None and r.type == type) or (taret != None and r.target == target) or ( attrs != None and any(r.hasAttribute(a) for a in attrs)):
+        if (type != None and r.type == type) or (target != None and r.target == target) or ( attrs != None and any(r.hasAttribute(a) for a in attrs)):
           relationInRelationList = True
           break
 
