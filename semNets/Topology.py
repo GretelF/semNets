@@ -150,5 +150,5 @@ class Topology:
         return path.reverse(), i
 
     #if after all iterations target is not found: return None
-    return None, -1
+    return [], -1
 

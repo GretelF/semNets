@@ -80,6 +80,9 @@ class Relation:
 
 
   def createAttribute(self, type, value):
+    for attr in self.attributes:
+      assert type != attr.type
+
     a = Attribute(type, value)
     self.attributes.append(a)
     return a

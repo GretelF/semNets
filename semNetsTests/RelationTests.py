@@ -43,3 +43,15 @@ class RelationTests (TestCase):
     self.assertEqual(a.value, 2)
     self.assertEqual(str(a), "amount: 2")
     self.assertEqual(repr(a), "Attribute(type = 'amount', value = '2')")
+
+  def test_SameAttributeTypeTwice(self):
+    rt = RelationType("has")
+    at = RelationAttributeType("amount")
+    source = Node("bird")
+    target = Node("wing")
+    r = Relation(rt, source, target)
+    a = r.createAttribute(at, 2)
+    with self.assertRaises(AssertionError):
+      a2 = r.createAttribute(at, 10)
+
+
