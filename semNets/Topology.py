@@ -3,15 +3,19 @@ from sys import maxsize
 
 class Topology:
 
-  def __init__(self):
+  def __init__(self, parent = None):
     self.nodes = []
     self.relations = []
+    self.parent = parent
 
   def __str__(self):
     return "Topology"
 
   def __repr__(self):
     return "Topology"
+
+  def setParent(self, parent):
+    self.parent = parent
 
   def existsNode(self, n):
     return n in self.nodes
@@ -26,6 +30,7 @@ class Topology:
 
   def existsRelation(self, r):
     return r in self.relations
+    # TODO: what about the parents relations?
 
   def insertRelation(self, r):
     assert r.target in self.nodes, "{} not in {}.".format(repr(r.target), repr(self))
@@ -76,6 +81,8 @@ class Topology:
     :param iterations: number of steps in the search algorithm, default = maximum int
     :return: True if path is found, False if not.
     '''
+    relationlist = self.relations.extend(self.parent.relations) if self.parent != None else self.relations
+
     nodes = [source]
     newNodes = nodes.copy()
     newNodesBuffer = []
@@ -84,7 +91,7 @@ class Topology:
       for node in newNodes:
         # get all relations where the current node is source and its type is in allowedRelations.
         # If allowedRelations is None the second condition is neglected
-        relations = [r for r in self.relations if r.source == node and (allowedRelations is None or r.type in allowedRelations)]
+        relations = [r for r in relationlist if r.source == node and (allowedRelations is None or r.type in allowedRelations)]
 
         for rel in relations:
           if rel.target not in nodes:
@@ -115,6 +122,10 @@ class Topology:
 
     :return: list of nodes in the found path and number of iterations needed. If no path is found: None and -1
     '''
+
+    relationlist = self.relations.extend(self.parent.relations) if self.parent != None else self.relations
+
+
     path = []
     nodes = {source : None}
     newNodes = nodes.copy()
@@ -124,7 +135,7 @@ class Topology:
       for relSource in newNodes:
         # get all relations where the current node is source and its type is in allowedRelations.
         # If allowedRelations is None the second condition is neglected
-        relations = [r for r in self.relations if r.source == relSource and (allowedRelations is None or r.type in allowedRelations)]
+        relations = [r for r in relationlist if r.source == relSource and (allowedRelations is None or r.type in allowedRelations)]
 
         for relation in relations:
           relTarget = relation.target

@@ -1,6 +1,7 @@
 from unittest import TestCase
 from semNets.Primitives import Relation, RelationType, RelationAttributeType, NodeAttributeType, Node
 
+
 class RelationTests (TestCase):
   def test_relationType(self):
     rt = RelationType("is-a")
@@ -54,4 +55,56 @@ class RelationTests (TestCase):
     with self.assertRaises(AssertionError):
       a2 = r.createAttribute(at, 10)
 
+  def test_hasAttributeOfType(self):
+    rt = RelationType("has")
+    at = RelationAttributeType("amount")
+    source = Node("bird")
+    target = Node("wing")
+    r = Relation(rt, source, target)
+    a = r.createAttribute(at, 2)
+    x = r.hasAttributeOfType(at)
+    self.assertTrue(x)
+
+  def test_calculateAttributeDistance_sameRelation(self):
+    rt = RelationType("is_a")
+    at = RelationAttributeType("wings")
+    at2 = RelationAttributeType("color")
+    at3 = RelationAttributeType("size")
+    source = Node("EmporerPenguin")
+    target = Node("Bird")
+    r = Relation(rt, source, target)
+    a = r.createAttribute(at, 2)
+    a2 = r.createAttribute(at2, "blackwhite")
+    a3 = r.createAttribute(at3, "big")
+
+    dist = r.calculateDistance(r)
+    self.assertEqual(dist, 0)
+
+  def test_calculateAttributeDistance_differentAttributesAndSource(self):
+    #               emporer penguin:    little penguin
+    #   wings       2                   2
+    #   color       blackwhite          blackwhite
+    #   size        big                 -
+    #   population  -                   notsomany
+
+
+    rt = RelationType("is_a")
+    at = RelationAttributeType("wings")
+    at2 = RelationAttributeType("color")
+    at3 = RelationAttributeType("size")
+    at4 = RelationAttributeType("population")
+    source = Node("EmporerPenguin")
+    source2 = Node("LittlePenguin")
+    target = Node("Bird")
+    r = Relation(rt, source, target)
+    a = r.createAttribute(at, 2)
+    a2 = r.createAttribute(at2, "blackwhite")
+    a3 = r.createAttribute(at3, "big")
+    r2 = Relation(rt, source2, target)
+    a4 = r2.createAttribute(at, 2)
+    a5 = r2.createAttribute(at2, "blackwhite")
+    a6 = r2.createAttribute(at4, "notsomany" )
+
+    dist = r.calculateDistance(r2)
+    self.assertEqual(dist, 0.375)
 

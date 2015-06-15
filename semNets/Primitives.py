@@ -1,7 +1,21 @@
 from collections import namedtuple
+import scipy.spatial.distance as sci
 
 relationTypes = {}
 attributeTypes = {}
+
+
+def euclideanDistance(u, v):
+  sumSq=0.0
+
+  #add up the squared differences
+  for i in range(len(u)):
+    sumSq+=(u[i]-v[i])**2
+
+  #take the square root of the result
+  return (sumSq**0.5)
+
+
 
 class NamedTypeBase:
   def __init__(self, name, typeName):
@@ -89,6 +103,64 @@ class Relation:
 
   def hasAttribute(self, attr):
     return attr in self.attributes
+
+  def hasAttributeOfType(self, type):
+    for attr in self.attributes:
+      if attr.type == type:
+        return True
+    return False
+
+  def getAttributeValue(self, type):
+    for attr in self.attributes:
+      if attr.type == type:
+        return attr.value
+    return None
+
+  def calculateAttributeDistance(self, other, wMissingAttribute = 0.25, wDifferentStringValue = 0.25):
+    dist = 0
+
+    # attribute similarity
+    selftypes = []
+    selfvalues = []
+    othertypes = []
+    othervalues = []
+
+    for attr in self.attributes:
+      if other.hasAttributeOfType(attr.type):
+        selftypes.append(attr.type)
+        othertypes.append(attr.type)
+        selfvalues.append(attr.value)
+        othervalues.append(other.getAttributeValue(attr.type))
+      else:
+        dist += wMissingAttribute
+
+    for attr in other.attributes:
+      if not self.hasAttributeOfType(attr.type):
+        dist += wMissingAttribute
+
+    # deal with the str values (-> add error weight to dist if different)
+    for i in range(len(selfvalues)):
+      if type(selfvalues[i]) is str or type(othervalues[i]) is str:
+        if selfvalues[i] != othervalues[i]:
+          dist += wDifferentStringValue
+        selfvalues[i] = 0
+        othervalues[i] = 0
+    dist += euclideanDistance(selfvalues, othervalues)
+    return dist
+
+  def calculateDistance(self, other, wAttr = 0.25, wSource = 0.25, wTarget = 0.25, wType = 0.25):
+    dif = 0
+
+    if self.type != other.type:
+      dif += wType
+    if self.source != other.source:
+      dif += wSource
+    if self.target != other.target:
+      dif += wTarget
+    dif += self.calculateAttributeDistance(other) * wAttr
+    return dif
+
+
 
 class Attribute:
   def __init__(self, type, value):
