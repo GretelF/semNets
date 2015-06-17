@@ -161,7 +161,6 @@ class Relation:
     return dif
 
 
-
 class Attribute:
   def __init__(self, type, value):
     self.type = type

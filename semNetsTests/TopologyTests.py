@@ -56,3 +56,4 @@ class TopologyTests(TestCase):
 
     self.assertEqual(t.relations[1], r2)
 
+# Todo: test findPath(), existsPath(), getAllRelations()

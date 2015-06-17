@@ -37,15 +37,18 @@ class Topology:
     assert r.source in self.nodes, "{} not in {}.".format(repr(r.source), repr(self))
     self.relations.append(r)
 
-  def tryGetOrInsertRelation(self, r):
-    pass  # TODO???
-
   def deleteRelation(self, r):
     if r in self.relations:
       self.relations.remove(r)
 
   def validate(self):
     pass                                        # TODO ?????
+
+  def getAllRelations(self):
+    if self.parent is None:
+      return self.relations
+    else:
+      return self.relations.append(self.parent.getAllRelations())
 
   def load(self, data):
     self.nodes.clear()
@@ -81,7 +84,7 @@ class Topology:
     :param iterations: number of steps in the search algorithm, default = maximum int
     :return: True if path is found, False if not.
     '''
-    relationlist = self.relations.extend(self.parent.relations) if self.parent != None else self.relations
+    relationlist = self.getAllRelations()
     #todo: recursive?! => recursive getAllRelations() function
 
     nodes = [source]
@@ -124,7 +127,7 @@ class Topology:
     :return: list of nodes in the found path and number of iterations needed. If no path is found: None and -1
     '''
 
-    relationlist = self.relations.extend(self.parent.relations) if self.parent != None else self.relations
+    relationlist = self.getAllRelations()
 
 
     path = []
