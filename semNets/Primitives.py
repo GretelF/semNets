@@ -148,7 +148,7 @@ class Relation:
     dist += euclideanDistance(selfvalues, othervalues)
     return dist
 
-  def calculateDistance(self, other, wAttr = 0.25, wSource = 0.25, wTarget = 0.25, wType = 0.25):
+  def calculateDistance(self, other, wAttr = 0.25, wSource = 0.25, wTarget = 0.25, wType = 0.25, wMissingAttribute = 0.25, wDifferentStringValue = 0.25):
     dif = 0
 
     if self.type != other.type:
@@ -157,7 +157,7 @@ class Relation:
       dif += wSource
     if self.target != other.target:
       dif += wTarget
-    dif += self.calculateAttributeDistance(other) * wAttr
+    dif += self.calculateAttributeDistance(other, wMissingAttribute, wDifferentStringValue) * wAttr
     return dif
 
 

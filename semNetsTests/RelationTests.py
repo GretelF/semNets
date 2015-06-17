@@ -80,13 +80,36 @@ class RelationTests (TestCase):
     dist = r.calculateDistance(r)
     self.assertEqual(dist, 0)
 
-  def test_calculateAttributeDistance_differentAttributesAndSource(self):
-    #               emporer penguin:    little penguin
+  def test_calculateDistance_differentSource(self):
+    rt = RelationType("is_a")
+    source = Node("EmporerPenguin")
+    source2 = Node("LittlePenguin")
+    target = Node("Bird")
+
+    r = Relation(rt, source, target)
+    r2 = Relation(rt, source2, target)
+
+    dist = r.calculateDistance(r2)
+    self.assertEqual(dist, 0.25)
+
+  def test_calculateDistance_differentTarget(self):
+    rt = RelationType("is_a")
+    source = Node("EmporerPenguin")
+    target = Node("SeaAnimal")
+    target2 = Node("Bird")
+
+    r = Relation(rt, source, target)
+    r2 = Relation(rt, source, target2)
+
+    dist = r.calculateDistance(r2)
+    self.assertEqual(dist, 0.25)
+
+  def test_calculateDistance_differentOrMissingAttributes(self):
+    #               emporer penguin:    emporer penguin
     #   wings       2                   2
     #   color       blackwhite          blackwhite
     #   size        big                 -
     #   population  -                   notsomany
-
 
     rt = RelationType("is_a")
     at = RelationAttributeType("wings")
@@ -94,17 +117,52 @@ class RelationTests (TestCase):
     at3 = RelationAttributeType("size")
     at4 = RelationAttributeType("population")
     source = Node("EmporerPenguin")
-    source2 = Node("LittlePenguin")
     target = Node("Bird")
     r = Relation(rt, source, target)
     a = r.createAttribute(at, 2)
     a2 = r.createAttribute(at2, "blackwhite")
     a3 = r.createAttribute(at3, "big")
-    r2 = Relation(rt, source2, target)
+    r2 = Relation(rt, source, target)
     a4 = r2.createAttribute(at, 2)
     a5 = r2.createAttribute(at2, "blackwhite")
     a6 = r2.createAttribute(at4, "notsomany" )
 
     dist = r.calculateDistance(r2)
-    self.assertEqual(dist, 0.375)
+    self.assertEqual(dist, 0.125)
+
+  def test_calculateDistance_Symmetry(self):
+    rt = RelationType("is_a")
+    at = RelationAttributeType("wings")
+    at2 = RelationAttributeType("size")
+    source = Node("EmporerPenguin")
+    source2 = Node("LittlePenguin")
+    target = Node("Bird")
+    r = Relation(rt, source, target)
+    r2 = Relation(rt, source2, target)
+    r.createAttribute(at, 2)
+    r2.createAttribute(at, 2)
+    r.createAttribute(at2, "big")
+    r2.createAttribute(at2, "small")
+
+    dist1 = r.calculateDistance(r2)
+    dist2 = r2.calculateDistance(r)
+    self.assertEqual(dist1, dist2)
+
+  def test_calculateDistance_customWeights(self):
+    rt = RelationType("is_a")
+    at = RelationAttributeType("wings")
+    at2 = RelationAttributeType("size")
+    source = Node("EmporerPenguin")
+    source2 = Node("LittlePenguin")
+    target = Node("Bird")
+
+    r = Relation(rt, source, target)
+    r2 = Relation(rt, source2, target)
+
+    r.createAttribute(at, 2)
+    r.createAttribute(at2, "big")
+    r2.createAttribute(at2, "small")
+    dist = r.calculateDistance(r2, wSource=0.5, wDifferentStringValue=0.3, wMissingAttribute=0.7)
+    self.assertEqual(dist, 0.75)
+
 

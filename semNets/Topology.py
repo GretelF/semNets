@@ -82,6 +82,7 @@ class Topology:
     :return: True if path is found, False if not.
     '''
     relationlist = self.relations.extend(self.parent.relations) if self.parent != None else self.relations
+    #todo: recursive?! => recursive getAllRelations() function
 
     nodes = [source]
     newNodes = nodes.copy()
