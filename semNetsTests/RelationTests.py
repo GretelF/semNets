@@ -1,5 +1,6 @@
 from unittest import TestCase
 from semNets.Primitives import Relation, RelationType, RelationAttributeType, NodeAttributeType, Node
+import semNets.GraphDistance as gd
 
 
 class RelationTests (TestCase):
@@ -77,7 +78,7 @@ class RelationTests (TestCase):
     a2 = r.createAttribute(at2, "blackwhite")
     a3 = r.createAttribute(at3, "big")
 
-    dist = r.calculateDistance(r)
+    dist = gd.calculateRelationDistance(r, r)
     self.assertEqual(dist, 0)
 
   def test_calculateDistance_differentSource(self):
@@ -89,19 +90,19 @@ class RelationTests (TestCase):
     r = Relation(rt, source, target)
     r2 = Relation(rt, source2, target)
 
-    dist = r.calculateDistance(r2)
+    dist = gd.calculateRelationDistance(r, r2)
     self.assertEqual(dist, 0.25)
 
   def test_calculateDistance_differentTarget(self):
     rt = RelationType("is_a")
-    source = Node("EmporerPenguin")
-    target = Node("SeaAnimal")
-    target2 = Node("Bird")
+    source = Node("Anna")
+    target = Node("Student")
+    target2 = Node("Employee")
 
     r = Relation(rt, source, target)
     r2 = Relation(rt, source, target2)
 
-    dist = r.calculateDistance(r2)
+    dist = gd.calculateRelationDistance(r, r2)
     self.assertEqual(dist, 0.25)
 
   def test_calculateDistance_differentOrMissingAttributes(self):
@@ -127,7 +128,7 @@ class RelationTests (TestCase):
     a5 = r2.createAttribute(at2, "blackwhite")
     a6 = r2.createAttribute(at4, "notsomany" )
 
-    dist = r.calculateDistance(r2)
+    dist = gd.calculateRelationDistance(r, r2)
     self.assertEqual(dist, 0.125)
 
   def test_calculateDistance_Symmetry(self):
@@ -144,8 +145,8 @@ class RelationTests (TestCase):
     r.createAttribute(at2, "big")
     r2.createAttribute(at2, "small")
 
-    dist1 = r.calculateDistance(r2)
-    dist2 = r2.calculateDistance(r)
+    dist1 = gd.calculateRelationDistance(r,r2)
+    dist2 = gd.calculateRelationDistance(r2, r)
     self.assertEqual(dist1, dist2)
 
   def test_calculateDistance_customWeights(self):
@@ -162,7 +163,7 @@ class RelationTests (TestCase):
     r.createAttribute(at, 2)
     r.createAttribute(at2, "big")
     r2.createAttribute(at2, "small")
-    dist = r.calculateDistance(r2, wSource=0.5, wDifferentStringValue=0.3, wMissingAttribute=0.7)
+    dist = gd.calculateRelationDistance(r, r2, wSource=0.5, wDifferentStringValue=0.3, wMissingAttribute=0.7)
     self.assertEqual(dist, 0.75)
 
 
