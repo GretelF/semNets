@@ -52,3 +52,20 @@ def calculateRelationDistance(r1, r2, wAttr = 0.25, wSource = 0.25, wTarget = 0.
     dif += wTarget
   dif += calculateAttributeDistance(r1, r2, wMissingAttribute, wDifferentStringValue) * wAttr
   return dif
+
+def matchRelations(rel, node, graph, wAttr = 0.25, wSource = 0.25, wTarget = 0.25, wType = 0.25, wMissingAttribute = 0.25, wDifferentStringValue = 0.25):
+  assert node in graph.nodes
+
+  relations = []
+  for r in graph.relations:
+    if r.source == node:
+      relations.append((r, calculateRelationDistance(rel, r,  wAttr = 0.25, wSource = 0.25, wTarget = 0.25, wType = 0.25, wMissingAttribute = 0.25, wDifferentStringValue = 0.25)))
+
+  relations = sorted(relations, key = lambda x: x[1])
+
+  for i in range(len(relations)):
+    relations[i] = relations[i][0]
+
+  return relations
+
+
