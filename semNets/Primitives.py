@@ -24,21 +24,21 @@ def RelationType(name):
   HAX(!)
   if relationType already exists returns existing instance, else returns new instance and adds it to relationTypes dictionary
   """
-  return relationTypes.setdefault(name, NamedTypeBase(name, "RelationType"))
+  return relationTypes.setdefault("Rel:{}".format(name), NamedTypeBase(name, "RelationType"))
 
 def RelationAttributeType(name):
   """
   HAX(!)
   if attributeType already exists returns existing instance, else returns new instance and adds it to attributeTypes dictionary
   """
-  return attributeTypes.setdefault(name, NamedTypeBase(name, "RelationAttributeType"))
+  return attributeTypes.setdefault("RelAttr:{}".format(name), NamedTypeBase(name, "RelationAttributeType"))
 
 def NodeAttributeType(name):
   """
   HAX(!)
   if attributeType already exists returns existing instance, else returns new instance and adds it to attributeTypes dictionary
   """
-  return attributeTypes.setdefault(name, NamedTypeBase(name, "NodeAttributeType"))
+  return attributeTypes.setdefault("NodeAttr:{}".format(name), NamedTypeBase(name, "NodeAttributeType"))
 
 
 class Node :

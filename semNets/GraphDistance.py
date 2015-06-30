@@ -59,7 +59,7 @@ def matchRelations(rel, node, graph, wAttr = 0.25, wSource = 0.25, wTarget = 0.2
   relations = []
   for r in graph.relations:
     if r.source == node:
-      relations.append((r, calculateRelationDistance(rel, r,  wAttr = 0.25, wSource = 0.25, wTarget = 0.25, wType = 0.25, wMissingAttribute = 0.25, wDifferentStringValue = 0.25)))
+      relations.append((r, calculateRelationDistance(rel, r,  wAttr, wSource, wTarget, wType, wMissingAttribute, wDifferentStringValue)))
 
   relations = sorted(relations, key = lambda x: x[1])
 
@@ -68,4 +68,7 @@ def matchRelations(rel, node, graph, wAttr = 0.25, wSource = 0.25, wTarget = 0.2
 
   return relations
 
+
+def calculateGraphDistance(graph1, graph2, node1, node2, parent1, parent2, iterationcount = 10):
+  pass
 
