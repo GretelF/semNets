@@ -1,7 +1,9 @@
 from unittest import TestCase
+import json
 import semNets.GraphDistance as gd
 from semNets.Topology import Topology
 from semNets.Primitives import Node, Relation, RelationAttributeType, RelationType
+from sys import maxsize
 
 class GraphDistanceTests(TestCase):
   def test_RelationMatching(self):
@@ -38,3 +40,22 @@ class GraphDistanceTests(TestCase):
     self.assertEqual(matchedRelations[0], r)
     self.assertEqual(matchedRelations[1], r2)
     self.assertEqual(matchedRelations[2], r3)
+
+  def test_GraphDistance(self):
+    with open("xgraph2.json") as file:
+      net1 = json.load(file)
+
+    g1 = Topology()
+    g1.load(net1)
+
+    with open("xgraph1.json") as file:
+      net2 = json.load(file)
+
+    g2 = Topology()
+    g2.load(net2)
+
+    node = Node("violet")
+
+    distance = gd.calculateGraphDistance(g1, g2, node, node, 10, 0, 3)
+
+    print(distance)

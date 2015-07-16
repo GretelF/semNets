@@ -1,3 +1,5 @@
+from sys import maxsize
+
 
 def euclideanDistance(u, v):
   sumSq=0.0
@@ -63,12 +65,57 @@ def matchRelations(rel, node, graph, wAttr = 0.25, wSource = 0.25, wTarget = 0.2
 
   relations = sorted(relations, key = lambda x: x[1])
 
-  for i in range(len(relations)):
-    relations[i] = relations[i][0]
-
   return relations
 
 
-def calculateGraphDistance(graph1, graph2, node1, node2, parent1, parent2, iterationcount = 10):
-  pass
+def calculateGraphDistance(graph1, graph2, node1, node2, currentBestErrorCount, currentErrorCount, iterationCount = 10):
+  # TODO: until now the function is not commutative! (it makes a difference in which order the arguments are given!)
+  #       -> probable solution: always iterate through the greater relation list first.
+  if iterationCount == 0:
+    return currentErrorCount
+
+  iterationCount -= 1
+
+  relations1 = [r for r in graph1.relations if r.source == node1]
+  relations2 = [r for r in graph2.relations if r.source == node2]
+
+  differenceInNumberOfRelations = abs(len(relations1) - len(relations2))
+
+  # accumulates best error counts for each relation in relations1
+  overallErrorCountForThisSubgraph = 0
+
+  if len(relations1) == 0:
+    return currentErrorCount + differenceInNumberOfRelations * 0.25
+
+
+  for r1 in relations1:
+    bestRelationFittingR1 = None
+    bestErrorCountForR1 = maxsize
+
+    #match relations in relations2 to r1
+    relations2 = matchRelations(r1, node2, graph2, wAttr = 0.25, wSource = 0.25, wTarget = 0.25, wType = 0.25, wMissingAttribute = 0.25, wDifferentStringValue = 0.25)
+
+    # if there are no relations to compare break
+    if len(relations2) == 0:
+      break
+
+    for r2 in relations2:
+      # r2[1] is the distance from r1 to r2
+      localCurrentErrorCountForThisLoop = currentErrorCount + r2[1]
+      errorCount = calculateGraphDistance(graph1, graph2, r1.target, r2[0].target, currentBestErrorCount - localCurrentErrorCountForThisLoop, localCurrentErrorCountForThisLoop, iterationCount)
+      #if the errorCount for R2 is smaller than the best one -> set errorCount as new best one
+      if errorCount < bestErrorCountForR1:
+        # subtract current error count to avoid adding it multiple times
+        bestErrorCountForR1 = errorCount - currentErrorCount
+        bestRelationFittingR1 = r2[0]
+
+    #add the best found error count for r1 to overallErrorCountForThisSubgraph
+    overallErrorCountForThisSubgraph += bestErrorCountForR1
+
+  #add error for different numbers of relations and eventually the currentErrorCount for this stage
+  return overallErrorCountForThisSubgraph + differenceInNumberOfRelations * 0.25 + currentErrorCount
+
+
+
+
 
