@@ -56,6 +56,6 @@ class GraphDistanceTests(TestCase):
 
     node = Node("violet")
 
-    distance = gd.calculateGraphDistance(g1, g2, node, node, 10, 0, 3)
+    distance = gd.calculateGraphDistance(g1, g2, node, node, 3)
 
     print(distance)

@@ -68,9 +68,38 @@ def matchRelations(rel, node, graph, wAttr = 0.25, wSource = 0.25, wTarget = 0.2
   return relations
 
 
-def calculateGraphDistance(graph1, graph2, node1, node2, currentBestErrorCount, currentErrorCount, iterationCount = 10):
-  # TODO: until now the function is not commutative! (it makes a difference in which order the arguments are given!)
-  #       -> probable solution: always iterate through the greater relation list first.
+def calculateGraphDistance(graph1, graph2, node1, node2, iterationCount=10):
+  assert iterationCount > 0, "Iteration count has to be greater than 0."
+
+  relations1 = [r for r in graph1.relations if r.source == node1]
+  relations2 = [r for r in graph2.relations if r.source == node2]
+
+  rel1 = relations1[0]
+  relations2 = matchRelations(rel1, node2, graph2, wAttr = 0.25, wSource = 0.25, wTarget = 0.25, wType = 0.25, wMissingAttribute = 0.25, wDifferentStringValue = 0.25)
+  rel2 = relations2[0][0]
+
+  currentBestErrorCount = relations2[0][1]
+  for i in range(iterationCount):
+    n1 = rel1.target
+    n2 = rel2.target
+    relations1 = [r for r in graph1.relations if r.source == n1]
+    relations2 = [r for r in graph2.relations if r.source == n2]
+
+    currentBestErrorCount += (abs(len(relations1)-len(relations2))) * 0.25
+
+    if len(relations1) == 0 or len(relations2) == 0:
+      return calculateGraphDistance_helper(graph1, graph2, node1, node2, currentBestErrorCount, 0, iterationCount)
+
+
+    rel1 = relations1[0]
+    relations2 = matchRelations(rel1, node2, graph2, wAttr = 0.25, wSource = 0.25, wTarget = 0.25, wType = 0.25, wMissingAttribute = 0.25, wDifferentStringValue = 0.25)
+    rel2 = relations2[0][0]
+    currentBestErrorCount += relations2[0][1]
+
+  return calculateGraphDistance_helper(graph1, graph2, node1, node2, currentBestErrorCount, 0, iterationCount)
+
+
+def calculateGraphDistance_helper(graph1, graph2, node1, node2, currentBestErrorCount, currentErrorCount, iterationCount = 10):
   if iterationCount == 0:
     return currentErrorCount
 
@@ -102,7 +131,7 @@ def calculateGraphDistance(graph1, graph2, node1, node2, currentBestErrorCount, 
     for r2 in relations2:
       # r2[1] is the distance from r1 to r2
       localCurrentErrorCountForThisLoop = currentErrorCount + r2[1]
-      errorCount = calculateGraphDistance(graph1, graph2, r1.target, r2[0].target, currentBestErrorCount - localCurrentErrorCountForThisLoop, localCurrentErrorCountForThisLoop, iterationCount)
+      errorCount = calculateGraphDistance_helper(graph1, graph2, r1.target, r2[0].target, currentBestErrorCount - localCurrentErrorCountForThisLoop, localCurrentErrorCountForThisLoop, iterationCount)
       #if the errorCount for R2 is smaller than the best one -> set errorCount as new best one
       if errorCount < bestErrorCountForR1:
         # subtract current error count to avoid adding it multiple times
