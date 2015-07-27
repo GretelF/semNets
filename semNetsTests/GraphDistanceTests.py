@@ -42,20 +42,20 @@ class GraphDistanceTests(TestCase):
     self.assertEqual(matchedRelations[2], r3)
 
   def test_GraphDistance(self):
-    with open("xgraph2.json") as file:
+    with open("homerock_01.json") as file:
       net1 = json.load(file)
 
     g1 = Topology()
     g1.load(net1)
 
-    with open("xgraph1.json") as file:
+    with open("homerock_02.json") as file:
       net2 = json.load(file)
 
     g2 = Topology()
     g2.load(net2)
 
-    node = Node("violet")
+    node = Node("Arcane Missiles-on_play-0")
 
-    distance = gd.calculateGraphDistance(g1, g2, node, node, 3)
+    distance = gd.calculateGraphDistance(g1, g2, node, node,10)
 
     print(distance)
