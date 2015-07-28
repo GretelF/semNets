@@ -9,9 +9,11 @@ class Topology:
     self.parent = parent
 
   def __str__(self):
+    #TODO
     return "Topology"
 
   def __repr__(self):
+    #TODO
     return "Topology"
 
   def setParent(self, parent):
@@ -40,6 +42,12 @@ class Topology:
   def deleteRelation(self, r):
     if r in self.relations:
       self.relations.remove(r)
+
+  def tryGetRelation(self, r):
+    #todo: what if there are two relations that are equal to r?
+    for relation in self.relations:
+      if relation == r:
+        return relation
 
   def validate(self):
     pass                                        # TODO ?????

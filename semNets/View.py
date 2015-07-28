@@ -5,9 +5,11 @@ class View:
     self.relations = []
 
   def __str__(self):
+    #TODO
     pass
 
   def __repr__(self):
+    #TODO
     pass
 
   # easy expand
