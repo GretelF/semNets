@@ -1,0 +1,33 @@
+{
+  "nodes" :
+  [
+    "pelican",
+    "bird",
+    "animal",
+    "penguin",
+    "creature",
+    "wings"
+  ],
+  "relationtypes":
+  [
+    "is_a",
+    "has"
+  ],
+  "attributetypes":
+  [
+  ],
+  "relations":
+    [
+      [0, 0, 1],
+      [0, 1, 2],
+      [0, 3, 1],
+      [0, 2, 4],
+      [1, 1, 5]
+    ],
+  "relation_attributes":
+    [
+    ],
+  "node_attributes":
+    [
+    ]
+}

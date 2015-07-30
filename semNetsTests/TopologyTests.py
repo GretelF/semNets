@@ -57,3 +57,32 @@ class TopologyTests(TestCase):
     self.assertEqual(t.relations[1], r2)
 
 # Todo: test findPath(), existsPath(), getAllRelations()
+
+  def test_existsPath(self):
+    with open("findPathTest.json") as file:
+      net = json.load(file)
+
+
+    t = Topology()
+    t.load(net)
+
+    bool = t.existsPath(Node("pelican"), Node("creature"))
+    bool2 = t.existsPath(Node("wings"), Node("creature"))
+    self.assertTrue(bool)
+    self.assertFalse(bool2)
+
+  def test_findPath(self):
+    with open("findPathTest.json") as file:
+      net = json.load(file)
+
+
+    t = Topology()
+    t.load(net)
+
+    path, iterations = t.findPath(Node("pelican"), Node("creature"))
+
+    self.assertEqual(iterations, 2)
+    self.assertEqual(path[0], Node("pelican"))
+    self.assertEqual(path[1], Node("bird"))
+    self.assertEqual(path[2], Node("animal"))
+    self.assertEqual(path[3], Node("creature"))

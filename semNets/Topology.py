@@ -112,7 +112,7 @@ class Topology:
       if len(newNodesBuffer) == 0:
         break
 
-      nodes.append(newNodesBuffer)
+      nodes.extend(newNodesBuffer)
       newNodes = newNodesBuffer.copy()
       newNodesBuffer.clear()
 
@@ -153,7 +153,7 @@ class Topology:
           # if the node is not already in the list of visited nodes:
           if relTarget not in nodes.keys():
             # the relations target is added with |source| as parent
-            newNodesBuffer[relTarget] = [relSource]
+            newNodesBuffer[relTarget] = relSource
 
       # no new nodes found
       if len(newNodesBuffer) == 0:
@@ -168,8 +168,10 @@ class Topology:
         curNode = target
         while curNode != source:
           path.append(curNode)
-          curNode = nodes[curNode][1]
-        return path.reverse(), i
+          curNode = nodes[curNode]
+        path.append(source)
+        path = path[::-1]
+        return path, i
 
     #if after all iterations target is not found: return None
     return [], -1

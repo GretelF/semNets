@@ -60,6 +60,9 @@ class Node :
   def __eq__(self, other):
     return self.name == other.name
 
+  def __hash__(self):
+    return self.name.__hash__()
+
 
 class Relation:
   def __init__(self, type, source, target):

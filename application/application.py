@@ -7,6 +7,10 @@ from semNets.View import View
 
 import uuid
 
+success = {"successful" : True}
+failure = {"successful" : False}
+
+
 class Environment:
   instances = {}
 
@@ -48,7 +52,7 @@ def compareGraphs(env, graph1, graph2, node1, node2, iterations = None):
   n2 = Node(node2)
   dist = semNets.GraphDistance.calculateGraphDistance(g1, g2, n1, n2, iterations)
 
-  #todo return dist
+  return {"result" : dist}
 
 
 @cmd("createTopology")
@@ -57,7 +61,7 @@ def createTopology(env, name, parent = None):
   topology = Topology(p)
   env.define(name, topology)
 
-  #Todo: return True or something
+  return success
 
 @cmd("createNode")
 def createNode(env, name):
@@ -66,7 +70,7 @@ def createNode(env, name):
   node = Node(name)
   env.define(name, node)
 
-  #todo: return True or something
+  return success
 
 @cmd("createRelation")
 def createRelation(env, type, source, target):
@@ -75,7 +79,7 @@ def createRelation(env, type, source, target):
   # todo: do relations need to be saved in the environment?
   # todo: + what name should they get?
 
-  #todo: return True or something
+  return success
 
 @cmd("relationCreateAttribute")
 def relationCreateAttribute(env, topology, relationType, source, target, attributeType, value, attributes = None):
@@ -88,7 +92,7 @@ def relationCreateAttribute(env, topology, relationType, source, target, attribu
   assert r is not None
   r.createAttribute(RelationAttributeType(attributeType), value)
 
-  #todo: return True or something
+  return success
 
 @cmd("relationHasAttribute")
 def relationHasAttribute(env, topology, type, source, target, attributeType, value):
@@ -100,7 +104,7 @@ def relationHasAttribute(env, topology, type, source, target, attributeType, val
   assert r is not None
   result = r.hasAttribute(attr)
 
-  #todo return result
+  return {"result" : result}
 
 @cmd("relationGetAttributeValue")
 def relationGetAttributeValue(env, topology, type, source, target, attributeType):
@@ -110,7 +114,8 @@ def relationGetAttributeValue(env, topology, type, source, target, attributeType
   r = t.tryGetRelation(tmpRelation)
   assert r is not None
   value = r.getAttributeValue(RelationAttributeType(attributeType))
-  #todo: return value
+
+  return {"result" : value}
 
 @cmd("relationHasAttributeOfType")
 def relationHasAttributeOfType(env, topology, type, source, target, attributeType):
@@ -121,13 +126,16 @@ def relationHasAttributeOfType(env, topology, type, source, target, attributeTyp
   assert r is not None
   result = r.hasAttributeOfType(RelationAttributeType(attributeType))
 
-  #todo return result
+  return {"result" : result}
+
 
 @cmd("loadTopology")
 def loadTopology(env, topology, data):
   t = env.vars[topology]
   t.load(data)
-  #todo return True or something
+
+  return success
+
 
 @cmd("setParentOfTopology")
 def setParentOfTopology(env, topology, parent):
@@ -138,7 +146,7 @@ def setParentOfTopology(env, topology, parent):
 
   t.setParent(p)
 
-  #todo return True or something
+  return success
 
 @cmd("existsNodeInTopology")
 def existsNodeInTopology(env, topology, node):
@@ -146,7 +154,7 @@ def existsNodeInTopology(env, topology, node):
   n = Node(node)
   result = t.existsNode(n)
 
-  #todo return result
+  return {"result" : result}
 
 @cmd("existsRelationInTopology")
 def existsRelationInTopology(env, topology, type, source, target):
@@ -154,7 +162,7 @@ def existsRelationInTopology(env, topology, type, source, target):
   relation = Relation(RelationType(type), Node(source), Node(target))
   result = t.existsRelation(relation)
 
-  #todo return result
+  return {"result" : result}
 
 @cmd("insertNodeInTopology")
 def insertNodeInTopology(env, topology, node):
@@ -162,7 +170,7 @@ def insertNodeInTopology(env, topology, node):
   n = Node(node)
   t.insertNode(n)
 
-  #todo return True or something
+  return success
 
 @cmd("insertRelationInTopology")
 def insertNodeInTopology(env, topology, type, source, target):
@@ -170,7 +178,7 @@ def insertNodeInTopology(env, topology, type, source, target):
   relation = Relation(RelationType(type), Node(source), Node(target))
   t.insertRelation(relation)
 
-  #todo return True or something
+  return success
 
 @cmd("deleteNodeInTopology")
 def deleteNodeInTopology(env, topology, node):
@@ -178,7 +186,7 @@ def deleteNodeInTopology(env, topology, node):
   n = Node(node)
   t.deleteNode(n)
 
-  #todo return True or something to indicate success
+  return success
 
 @cmd("deleteRelationInTopology")
 def deleteRelationInTopology(env, topology, type, source, target):
@@ -186,41 +194,46 @@ def deleteRelationInTopology(env, topology, type, source, target):
   relation = Relation(RelationType(type), Node(source), Node(target))
   t.deleteRelation(relation)
 
-  #todo return True or something to indicate success
+  return success
 
 @cmd("includeNodeInView")
 def includeNodeInView(env, view, node):
   v = env.vars[view]
   n = Node(node)
   v.includeNode(n)
-  #todo: return True or something
+
+  return success
 
 @cmd("includeRelationInView")
 def includeRelationInView(env, view, type, source, target):
   v = env.vars[view]
   r = Relation(RelationType(type), Node(source), Node(target))
   v.includeRelation(r)
-  #todo: return True or something
+
+  return success
 
 @cmd("excludeNodeInView")
 def excludeNodeInView(env, view, node):
   v = env.vars[view]
   n = Node(node)
   v.excludeNode(n)
-  #todo: return True or something
+
+  return success
 
 @cmd("excludeRelationInView")
 def excludeRelationInView(env, view, type, source, target):
   v = env.vars[view]
   r = Relation(RelationType(type), Node(source), Node(target))
   v.excludeRelation(r)
-  #todo: return True or something
+
+  return success
 
 @cmd("mendView")
 def mendView(env, view):
   v = env.vars[view]
   v.mend()
-  #todo: return True or something
+
+  return success
 
 @cmd("union")
 def union(env, view1, view2, resultView):
@@ -230,6 +243,8 @@ def union(env, view1, view2, resultView):
   v3 = v1.union(v2)
   env.define(resultView, v3)
 
+  return success
+
 @cmd("symDifference")
 def symDifference(env, view1, view2, resultView):
   v1 = env.vars[view1]
@@ -237,6 +252,8 @@ def symDifference(env, view1, view2, resultView):
 
   v3 = v1.symDifference(v2)
   env.define(resultView, v3)
+
+  return success
 
 @cmd("intersection")
 def intersection(env, view1, view2, resultView):
@@ -246,31 +263,33 @@ def intersection(env, view1, view2, resultView):
   v3 = v1.intersection(v2)
   env.define(resultView, v3)
 
-@cmd("nodeFilter")
-def nodeFilter(env, subgraph, resultgraph, conditions):
-  filter = semNets.NodeFilter.translate(conditions)
-  view = env.vars[subgraph]
-  resultView = View(view.topology)
+  return success
 
-  for node in view.nodes:
+@cmd("nodeFilter")
+def nodeFilter(env, view, resultView, conditions):
+  filter = semNets.NodeFilter.translate(conditions)
+  v = env.vars[view]
+  resultView = View(v.topology)
+
+  for node in v.nodes:
     if filter(node):
       resultView.includeNode(node)
 
-  for relation in view.relations:
+  for relation in v.relations:
     if relation.source in resultView.nodes and relation.target in resultView.nodes:
       resultView.includeRelation(relation)
 
-  env.define(resultgraph, resultView)
+  env.define(resultView, resultView)
 
-  #todo: return True or something to indicate success
+  return success
 
 @cmd("expandView")
-def expandView(env, subgraph, conditions):
+def expandView(env, view, conditions):
   filter = semNets.RelationFilter.translate(conditions)
-  view = env.vars[subgraph]
-  view.expand(filter)
+  v = env.vars[view]
+  v.expand(filter)
 
-  #todo: return True or something
+  return success
 
 @cmd("findPath")
 def findPath(env, topology, source, target, allowedRelationTypes = None, iterations = None):
@@ -286,9 +305,7 @@ def existsPath(env, topology, source, target, allowedRelationTypes = None, itera
   result = t.existsPath(Node(source), Node(target), allowedRelationTypes, iterations)
   #todo: allowedRelationTypes is list of strings. has to be list of RelationType!!!
 
-  #todo: return result
-
-
+  return {"result" : result}
 
 def dispatch(data):
   assert "env" in data
@@ -299,8 +316,6 @@ def dispatch(data):
     thecmd = commands.get(cmdname, None)
     assert thecmd is not None
     thecmd(env, **args)
-
-
 
 
 def main():
