@@ -50,6 +50,10 @@ class Topology:
         return relation
 
   def validate(self):
+    '''
+    This function validates the topology. It checks, whether the topology contains one connected graph or not.
+    :return:
+    '''
     pass                                        # TODO ?????
 
   def getAllRelations(self):
@@ -59,6 +63,10 @@ class Topology:
       return self.relations.append(self.parent.getAllRelations())
 
   def load(self, data):
+    '''
+    This function loads a topology from a dictionary.
+    All previous nodes and relations, if existing, are wiped out.
+    '''
     self.nodes.clear()
     self.relations.clear()
 
@@ -66,11 +74,12 @@ class Topology:
     relationtypes = data.get("relationtypes")
     for node in data.get("nodes"):                                                              # load nodes
       self.nodes.append(Node(node))
-    for node_attribute in data.get("node_attributes"):                                          # load node attributes
-      at = NodeAttributeType(attributetypes[node_attribute[0]])
-      index = node_attribute[1]
-      value = node_attribute[2]
-      self.nodes[index].createAttribute(at, value)
+    if "node_attributes" in data:
+      for node_attribute in data.get("node_attributes"):                                          # load node attributes
+        at = NodeAttributeType(attributetypes[node_attribute[0]])
+        index = node_attribute[1]
+        value = node_attribute[2]
+        self.nodes[index].createAttribute(at, value)
     for relation in data.get("relations"):                                                      # load relations
       rt = RelationType(relationtypes[relation[0]])
       source = self.nodes[relation[1]]

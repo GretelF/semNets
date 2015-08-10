@@ -7,6 +7,12 @@ from semNets.View import View
 
 import uuid
 
+from flask import Flask, request, jsonify
+import json
+import codecs
+app = Flask(__name__)
+
+
 success = {"successful" : True}
 failure = {"successful" : False}
 
@@ -31,6 +37,38 @@ class Environment:
   def __eq__(self, other):
     return self.uuid == other.uuid
 
+
+def translateGraphToJSON(graph):
+  '''
+    a function to print topologies and views.
+  '''
+  dict = {}
+  dict["nodes"] = []
+  dict["relationtypes"] = []
+  dict["attributetypes"] = []
+  dict["relations"] = []
+  dict["relation_attributes"] = []
+
+  for node in graph.nodes:
+    dict["nodes"].append(str(node))
+
+  for relation in graph.relations:
+    if str(relation.type) not in dict["relationtypes"]:
+      dict["relationtypes"].append(str(relation.type))
+
+    rel = [dict["relationtypes"].index(str(relation.type)), dict["nodes"].index(str(relation.source)), dict["nodes"].index(str(relation.target))]
+    dict["relations"].append(rel)
+
+    for attribute in relation.attributes:
+      if str(attribute.type) not in dict["relation_attributes"]:
+        dict["attributetypes"].append(str(attribute.type))
+
+      attr = [dict["attributetypes"].index(str(attribute.type)), dict["relations"].index(rel), str(attribute.value)]
+      dict["relation_attributes"].append(attr)
+
+  return dict
+
+
 usecases = \
   {
     "createView" : semNets.View.View.__init__,
@@ -43,6 +81,13 @@ def cmd(name):
     commands[name] = func
     return func
   return wrapper
+
+
+@cmd("createEnvironment")
+def createTopology():
+  env = Environment()
+  res = {"createEnvironment" : {"uuid" : str(env.uuid)}}
+  return res, env.uuid
 
 @cmd("compareGraphs")
 def compareGraphs(env, graph1, graph2, node1, node2, iterations = None):
@@ -307,20 +352,46 @@ def existsPath(env, topology, source, target, allowedRelationTypes = None, itera
 
   return {"result" : result}
 
-def dispatch(data):
-  assert "env" in data
-  env = Environment.instances.get(data.pop("env"), None)
-  assert env is not None
+@cmd("printGraph")
+def printGraph(env, graphname):
+  g = env.vars[graphname]
+  result = translateGraphToJSON(g)
+  return result
 
-  for cmdname, args in data:
+def dispatch(request):
+  result = []
+  data = request["data"]
+
+  if "createEnvironment" in data[0]:
+    res, envuuid = commands.get("createEnvironment")()
+    result.append(res)
+  elif "env" in data[0]:
+    envuuid = data[0].pop("env")
+  else:
+    return {"error" : "missing environment"}
+
+  env = Environment.instances.get(envuuid, None)
+
+  if env is None:
+    return {"error" : "missing environment"}
+
+  for cmd in data[1:(len(data))]:
+    cmdname = list(cmd.keys())[0]
+    args = list(cmd.values())[0]
     thecmd = commands.get(cmdname, None)
     assert thecmd is not None
-    thecmd(env, **args)
+    result.append({cmdname: thecmd(env, **args)})
 
+  return {'results': result}
 
-def main():
-  pass
-
+@app.route("/", methods=["POST"])
+def hello():
+  reader = codecs.getreader("utf-8")
+  data = json.load(reader(request.files["request"]))
+  result = dispatch(data)
+  return jsonify(result), 200
 
 if __name__ == "__main__":
-  main()
+  app.run(debug=True)
+
+

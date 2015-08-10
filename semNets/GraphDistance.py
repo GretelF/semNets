@@ -12,6 +12,10 @@ def euclideanDistance(u, v):
   return (sumSq**0.5)
 
 def calculateAttributeDistance(r1, r2, wMissingAttribute = 0.25, wDifferentStringValue = 0.25):
+  '''
+  This function calculates the difference between the attributes of the relations r1 and r2.
+  The wheights for missing attributes and different string values can be handed to the function as parameters.
+  '''
   dist = 0
 
   # attribute similarity
@@ -43,7 +47,12 @@ def calculateAttributeDistance(r1, r2, wMissingAttribute = 0.25, wDifferentStrin
   dist += euclideanDistance(selfvalues, othervalues)
   return dist
 
+
 def calculateRelationDistance(r1, r2, wAttr = 0.25, wSource = 0.25, wTarget = 0.25, wType = 0.25, wMissingAttribute = 0.25, wDifferentStringValue = 0.25):
+  '''
+  This function calculates the distance between relations takingin account source, target, type and attributes.
+  The weights can be handed to the function as attributes.
+  '''
   dif = 0
 
   if r1.type != r2.type:
@@ -69,6 +78,9 @@ def matchRelations(rel, node, graph, wAttr = 0.25, wSource = 0.25, wTarget = 0.2
 
 
 def calculateGraphDistance(graph1, graph2, node1, node2, iterationCount=10):
+  '''
+  The function calculates the distance between graph1 and graph2 starting from node1 in graph1 and node2 in graph2.
+  '''
   assert iterationCount > 0, "Iteration count has to be greater than 0."
 
   relations1 = [r for r in graph1.relations if r.source == node1]
