@@ -57,6 +57,26 @@ class Node :
     self.attributes.append(a)
     return a
 
+  def hasAttribute(self, attr):
+    return attr in self.attributes
+
+  def hasAttributeOfType(self, type):
+    for attr in self.attributes:
+      if attr.type == type:
+        return True
+    return False
+
+  def getAttributeValue(self, type):
+    for attr in self.attributes:
+      if attr.type == type:
+        return attr.value
+    return None
+
+  def setAttributeValue(self, type, value):
+    for attr in self.attributes:
+      if attr.type == type:
+        attr.value = value
+
   def __eq__(self, other):
     return self.name == other.name
 

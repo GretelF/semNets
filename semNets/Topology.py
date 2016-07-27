@@ -20,7 +20,29 @@ class Topology:
     self.parent = parent
 
   def existsNode(self, n):
-    return n in self.nodes
+    flag = False
+    if self.parent != None:
+      flag = self.parent.existsNode(n)
+    return flag or n in self.nodes
+
+  def existsNodeByName(self, name):
+    parentflag = False
+    selfflag = False
+    if self.parent != None:
+      parentflag = self.parent.existsNodeByName(name)
+    for node in self.nodes:
+      if node.name == name:
+        selfflag = True
+        break
+    return parentflag or selfflag
+
+  def getNodeByName(self, name):
+    for node in self.nodes:
+      if node.name == name:
+        return node
+    if self.parent.existsNodeByName(name):
+      return self.parent.getNodeByName(name)
+    return None
 
   def insertNode(self, n):
     assert n not in self.nodes, "{} already in {}.".format(repr(n), repr(self))
@@ -32,11 +54,16 @@ class Topology:
 
   def existsRelation(self, r):
     return r in self.relations
-    # TODO: what about the parents relations?
+
+  def existsRelationIncludingParents(self, r):
+    flag = False
+    if self.parent != None:
+      flag = self.parent.existsRelationIncludingParents(r)
+    return flag or r in self.relations
 
   def insertRelation(self, r):
-    assert r.target in self.nodes, "{} not in {}.".format(repr(r.target), repr(self))
-    assert r.source in self.nodes, "{} not in {}.".format(repr(r.source), repr(self))
+    assert self.existsNode(r.target), "{} not in {}.".format(repr(r.target), repr(self))
+    assert self.existsNode(r.source), "{} not in {}.".format(repr(r.source), repr(self))
     self.relations.append(r)
 
   def deleteRelation(self, r):

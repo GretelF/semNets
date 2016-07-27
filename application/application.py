@@ -40,7 +40,7 @@ class Environment:
 
 def translateGraphToJSON(graph):
   '''
-    a function to print topologies and views.
+    a function to bring topologies and views into the comact json format.
   '''
   dict = {}
   dict["nodes"] = []
@@ -167,7 +167,10 @@ def relationHasAttributeOfType(env, topology, type, source, target, attributeTyp
   tmpRelation = Relation(RelationType(type), Node(source), Node(target))
   t = env.vars[topology]
   assert t is not None
-  r = t.tryGetRelation(tmpRelation)
+  r = None
+  for rel in t.relations:
+    if rel.source == tmpRelation.source and rel.target == tmpRelation.target and rel.type == tmpRelation.type:
+      r = rel
   assert r is not None
   result = r.hasAttributeOfType(RelationAttributeType(attributeType))
 
@@ -366,7 +369,7 @@ def dispatch(request):
     res, envuuid = commands.get("createEnvironment")()
     result.append(res)
   elif "env" in data[0]:
-    envuuid = data[0].pop("env")
+    envuuid = uuid.UUID(data[0].pop("env"))
   else:
     return {"error" : "missing environment"}
 

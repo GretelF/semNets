@@ -75,7 +75,6 @@ class TopologyTests(TestCase):
     with open("findPathTest.json") as file:
       net = json.load(file)
 
-
     t = Topology()
     t.load(net)
 
@@ -86,3 +85,21 @@ class TopologyTests(TestCase):
     self.assertEqual(path[1], Node("bird"))
     self.assertEqual(path[2], Node("animal"))
     self.assertEqual(path[3], Node("creature"))
+
+  def test_existsNodeIncludingParentTopology(self):
+    with open("graph1.json") as file:
+      net = json.load(file)
+
+    t = Topology()
+    t.load(net)
+
+    t2 = Topology()
+    n = Node("black")
+    t2.insertNode(n)
+
+    t2.setParent(t)
+
+    n2 = Node("violet")
+
+    self.assertTrue(t2.existsNode(n))
+    self.assertTrue(t2.existsNode(n2))
