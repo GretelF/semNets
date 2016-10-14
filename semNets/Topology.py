@@ -212,3 +212,34 @@ class Topology:
     #if after all iterations target is not found: return None
     return [], -1
 
+  def toJSON(self):
+    '''
+      a function to bring topologies and views into the comact json format.
+    '''
+    dict = {}
+    dict["nodes"] = []
+    dict["relationtypes"] = []
+    dict["attributetypes"] = []
+    dict["relations"] = []
+    dict["relation_attributes"] = []
+
+    for node in self.nodes:
+      dict["nodes"].append(str(node))
+
+    for relation in self.relations:
+      if str(relation.type) not in dict["relationtypes"]:
+        dict["relationtypes"].append(str(relation.type))
+
+      rel = [dict["relationtypes"].index(str(relation.type)), dict["nodes"].index(str(relation.source)),
+             dict["nodes"].index(str(relation.target))]
+      dict["relations"].append(rel)
+
+      for attribute in relation.attributes:
+        if str(attribute.type) not in dict["relation_attributes"]:
+          dict["attributetypes"].append(str(attribute.type))
+
+        attr = [dict["attributetypes"].index(str(attribute.type)), dict["relations"].index(rel), str(attribute.value)]
+        dict["relation_attributes"].append(attr)
+
+    return dict
+

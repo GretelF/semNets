@@ -1,5 +1,4 @@
 from collections import namedtuple
-import scipy.spatial.distance as sci
 
 relationTypes = {}
 attributeTypes = {}

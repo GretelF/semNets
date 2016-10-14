@@ -3,11 +3,14 @@ import json
 import semNets.GraphDistance as gd
 from semNets.Topology import Topology
 import Parser
-from Parser.Parser import goToNextPhrase, parseLog, parseValues
+from Parser.Parser import goToNextPhrases, parseLog, parseValues_Transitioning, parseValues_Nested
 from semNets.Primitives import Node, Relation, RelationAttributeType, RelationType, Attribute, NodeAttributeType
 from sys import maxsize
 
+
+
 class FirstParserTests(TestCase):
+
   def test_firstparsertests(self):
     # load static semantic network consisting of card names and so on
     # still missing: things like "game" and "turn"
@@ -23,7 +26,10 @@ class FirstParserTests(TestCase):
 
     #with open("hearthstone_log_parseTransitionsTest.txt") as file:
     with open("hearthstone_2016_06_20_15_30_29.log") as file:
-        g2 = parseLog(file, g1)
+      g2 = parseLog(file, g1)
+
+    #with open("condensedlog.json") as file:
+      #file.write(g2.toJSON())
 
     relationtype_is_a = RelationType("is_a")
     relationtype_has = RelationType("has")
@@ -44,32 +50,45 @@ class FirstParserTests(TestCase):
 
   def test_goToNextPhrase(self):
     with open("testGoToNextPhrase.txt") as file:
-      x = goToNextPhrase(file, "Hello World")
+      x = goToNextPhrases(file, ["Hello World"])
       self.assertEqual(x, "Hello World\n", "The first line containing 'Hello World' should be 'Hello World'!")
-      y = goToNextPhrase(file, "Hello World")
+      y = goToNextPhrases(file, ["Hello World"])
       self.assertEqual(y, "Hello World this is a test\n", "The second line containing 'Hello World' should be 'Hello World this is a test'!")
-      z = goToNextPhrase(file, "Hello World")
+      z = goToNextPhrases(file, ["Hello World"])
       self.assertEqual(z, 'Omg this is a Hello World test\n', "The third line containing 'Hello World' should be 'Omg this is a Hello World test'!")
 
 
-  def test_parseValues(self):
+  def test_parseValues_segment(self):
     s = "abc=2 xy=Hallo Welt z=33"
     d = {"abc" : 2, "xy" : "Hallo Welt", "z" :33}
 
-    d2 = parseValues(s)
+    d2 = parseValues_Transitioning(s)
     self.assertEqual(d, d2, "the parsed dict and the given dict should be equal")
 
     s = "name=Boulderfist Ogre id=13 zone=HAND zonePos=3 cardId=CS2_200 player=1"
     d = {"name" : "Boulderfist Ogre", "id":13, "zone":"HAND", "zonePos":3, "cardId":"CS2_200", "player":1}
 
-    d2 = parseValues(s)
+    d2 = parseValues_Transitioning(s)
 
+    self.assertEqual(d, d2, "the parsed dict and the given dict should be equal")
+
+  def test_parseValues_nested(self):
+    s = "abc=2 xy=[h=Hallo Welt j=234] z=33 n=[foo=What The Fuck bar=WTF]"
+    d = {"abc": 2, "xy": {"h" : "Hallo Welt", "j" : 234}, "z": 33, "n" : {"foo" : "What The Fuck", "bar":"WTF"}}
+
+    d2 = parseValues_Nested(s)
+    self.assertEqual(d, d2, "the parsed dict and the given dict should be equal")
+
+    s = "Entity=[name=Bloodfen Raptor id=11 zone=PLAY zonePos=1 cardId=CS2_172 player=1] EffectCardId= EffectIndex=-1 Target=[name=Gul'dan id=66 zone=PLAY zonePos=0 cardId=HERO_07 player=2]"
+    d = {"Entity" : {"name" : "Bloodfen Raptor", "id":11, "zone":"PLAY", "zonePos":1, "cardId":"CS2_172", "player":1}, "EffectIndex":-1, "Target":{"name":"Gul'dan", "id": 66, "zone":"PLAY", "zonePos":0, "cardId":"HERO_07", "player":2}}
+
+    d2 = parseValues_Nested(s)
     self.assertEqual(d, d2, "the parsed dict and the given dict should be equal")
 
   def test_parseValuesWithEmptyString(self):
     s = ""
     d = {}
-    d2 = parseValues(s)
+    d2 = parseValues_Transitioning(s)
     self.assertEqual(d, d2, "parsing an empty string for values should lead an empty dict")
 
 
