@@ -28,8 +28,10 @@ class FirstParserTests(TestCase):
     with open("hearthstone_2016_06_20_15_30_29.log") as file:
       g2 = parseLog(file, g1)
 
-    #with open("condensedlog.json") as file:
-      #file.write(g2.toJSON())
+    test = g2.toJsonNamedTriples()
+    with open("test.json", "w") as file:
+      json.dump(test, file)
+
 
     relationtype_is_a = RelationType("is_a")
     relationtype_has = RelationType("has")

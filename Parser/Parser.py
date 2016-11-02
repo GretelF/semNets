@@ -1,3 +1,4 @@
+import json
 from semNets.Topology import Topology
 from semNets.Primitives import Node, Relation, RelationAttributeType, RelationType, Attribute
 
@@ -199,11 +200,14 @@ def parseLog(file, parent):
       print("The Coin passed")
     nextLine, phrase, current_linenumber = goToNextPhrases(file, ["TRANSITIONING"], current_linenumber)
 
+
+
   nextLine, phrase, current_linenumber = goToNextPhrases(file, ["TRANSITIONING", "BlockType=ATTACK", "tag=DAMAGE"], current_linenumber)
   #normal game play starts here
-  while nextLine != -1:
+  while nextLine != -1 and "CREATE_GAME" not in nextLine:
     utilities, top = functions[phrase](nextLine, utilities, top)
-    nextLine, phrase, current_linenumber = goToNextPhrases(file, ["TRANSITIONING", "BlockType=ATTACK", "tag=DAMAGE"], current_linenumber)
+    nextLine, phrase, current_linenumber = goToNextPhrases(file, ["TRANSITIONING", "BlockType=ATTACK", "tag=DAMAGE", "CREATE_GAME"], current_linenumber)
+
 
   return top
 

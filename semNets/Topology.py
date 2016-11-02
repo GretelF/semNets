@@ -243,3 +243,33 @@ class Topology:
 
     return dict
 
+
+  def toJsonNamedTriples(self):
+    '''
+      a function to bring topologies and views into the comact json format with named triples.
+    '''
+    dict = {}
+    dict["nodes"] = []
+    dict["relationtypes"] = []
+    dict["attributetypes"] = []
+    dict["relations"] = []
+    dict["relation_attributes"] = []
+
+    for node in self.nodes:
+      dict["nodes"].append(str(node))
+
+    for relation in self.relations:
+      if str(relation.type) not in dict["relationtypes"]:
+        dict["relationtypes"].append(str(relation.type))
+
+      rel = [str(relation.type), str(relation.source), str(relation.target)]
+      dict["relations"].append(rel)
+
+      for attribute in relation.attributes:
+        if str(attribute.type) not in dict["attributetypes"]:
+          dict["attributetypes"].append(str(attribute.type))
+
+        attr = [str(attribute.type), dict["relations"].index(rel), str(attribute.value)]
+        dict["relation_attributes"].append(attr)
+
+    return dict
